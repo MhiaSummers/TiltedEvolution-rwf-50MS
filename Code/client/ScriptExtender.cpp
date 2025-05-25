@@ -74,6 +74,12 @@ bool IsScriptExtenderLoaded()
     return g_SKSEModuleHandle;
 }
 
+// Declaration required for getting preload hooks running, see comment when invoked below. 
+// This declaration just forces the linker to put it into the IAT, and that lets the preloader 
+// (which specifically uses an IAT hook (it expects it to be imported into the IAT), this is
+// supposed to be very early in startup and is called from DllMain, so it can't load any libraries. 
+#pragma comment(linker, "/export:_initterm_e")
+
 void LoadScriptExender()
 {
     const auto exeVerson{GetSKSEStyleExeVersion()};
@@ -131,6 +137,11 @@ void LoadScriptExender()
         spdlog::error("Pre anniversary Script Extender is unsupported");
         return;
     }
+
+    // Make any early-stage hook we picked up run. This is mostly for the SKSE64 preloader (or EngineFixes version of it)
+    // if they are being used. The call makes sure they make sure they run AFTER the SkyrimSE.exe is loaded, but BEFORE SKSE runs.
+    // This compensates for the different SkyrimSE.exe loading procedures.
+    _initterm_e(nullptr, nullptr);
 
     if (g_SKSEModuleHandle = LoadLibraryW(needle->c_str()))
     {

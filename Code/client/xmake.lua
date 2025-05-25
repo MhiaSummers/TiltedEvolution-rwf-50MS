@@ -69,7 +69,11 @@ target(name)
     add_syslinks(
         "version",
         "dbghelp",
-        "kernel32")
+        "kernel32",
+        "ucrt")
+        -- You may think you don't need that last one. 
+        -- But it makes the obscure #pragma (linker, "/export:...") 
+        -- for the SKSE preloader work; see ScriptExtender.cpp
 end
 
 add_requires("tiltedcore v0.2.7", {debug = true})
