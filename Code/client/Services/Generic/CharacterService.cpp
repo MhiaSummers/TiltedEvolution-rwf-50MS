@@ -1455,7 +1455,7 @@ void CharacterService::RunLocalUpdates() const noexcept
 void CharacterService::RunRemoteUpdates() noexcept
 {
     // Delay by 300ms to let the interpolation system accumulate interpolation points
-    const auto tick = m_transport.GetClock().GetCurrentTick() - 300;
+    const auto tick = m_transport.GetClock().GetCurrentTick() - 50;
 
     // Interpolation has to keep running even if the actor is not in view, otherwise we will never know if we need to spawn it
     auto interpolatedEntities = m_world.view<RemoteComponent, InterpolationComponent>();
